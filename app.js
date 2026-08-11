@@ -30,7 +30,7 @@ if(acquisitionSource === "surveyswap"){
   const note = document.createElement("div");
   note.className = "hint";
   note.style.marginTop = "14px";
-  note.textContent = "SurveySwap participant? Complete the Deal Audit and your SurveySwap completion link/code will appear on the result page so you can claim Karma.";
+  note.textContent = "SurveySwap participant? Complete the Deal Audit using values from your actual promotion and bill. Your SurveySwap completion link/code will then appear on the result page so you can claim Karma.";
   const hero = document.querySelector(".hero");
   hero?.appendChild(note);
 }
@@ -64,6 +64,7 @@ async function submitResearch(eventType, audit){
     participant_id:participantId,
     audit_id:audit.audit_id,
     schema:audit.schema,
+    qa_version:audit.qa_version,
     created_at:new Date().toISOString(),
     carrier:audit.carrier,
     promised_value:audit.promised_value,
@@ -77,6 +78,10 @@ async function submitResearch(eventType, audit){
     remaining_value:audit.remaining_value,
     price_variant:audit.price_variant,
     acquisition_source:acquisitionSource,
+    actual_data_confirmed:audit.actual_data_confirmed,
+    data_quality:audit.data_quality,
+    example_match_flag:audit.example_match_flag,
+    example_match_score:audit.example_match_score,
     direct_identifiers_included:false,
     pdf_uploaded:false,
     source_host:location.host
@@ -129,8 +134,23 @@ function classify({carrier,promised,instant,term,billMonth,actualCurrent,actualC
     explanation:`The values you entered are consistent with a simple monthly credit schedule. Exact promotion terms still control.`};
 }
 
+function approx(value, target, tolerance){
+  return Math.abs(Number(value) - target) <= tolerance;
+}
+
+function exampleMatchQA(vals){
+  let score = 0;
+  if(vals.carrier === "AT&T") score += 1;
+  if(approx(vals.promised, 1100, 0.01)) score += 1;
+  if(vals.term === 36) score += 1;
+  if(vals.billMonth === 6) score += 1;
+  if(approx(vals.actualCurrent, 30.56, 0.05)) score += 1;
+  if(approx(vals.actualCumulative, 183.34, 0.20) || approx(vals.actualCumulative, 183.36, 0.20)) score += 1;
+  return {score, flag:score >= 5};
+}
+
 function showSurveyCircleCompletion(){
-  if(acquisitionSource !== "surveycircle" || !latestAudit) return;
+  if(acquisitionSource !== "surveycircle" || !latestAudit || latestAudit.actual_data_confirmed !== true) return;
   if($("surveyCircleCompletion")) return;
 
   const block = document.createElement("div");
@@ -148,7 +168,7 @@ function showSurveyCircleCompletion(){
 }
 
 function showSurveySwapCompletion(){
-  if(acquisitionSource !== "surveyswap" || !latestAudit) return;
+  if(acquisitionSource !== "surveyswap" || !latestAudit || latestAudit.actual_data_confirmed !== true) return;
   if($("surveySwapCompletion")) return;
 
   const block = document.createElement("div");
@@ -191,23 +211,32 @@ $("extractBtn").addEventListener("click", async () => {
 
 $("auditBtn").addEventListener("click", async () => {
   $("formError").textContent = "";
+  if(!$("actualDataConfirm").checked){
+    $("formError").textContent = "Please confirm that you entered values from your actual promotion and bill, not example or invented numbers.";
+    return;
+  }
   if(!$("consent").checked){
     $("formError").textContent = "Please confirm the research-beta consent first.";
     return;
   }
+  const promisedRaw = $("promised").value.trim();
+  const termRaw = $("term").value.trim();
+  const billMonthRaw = $("billMonth").value.trim();
+  const instantRaw = $("instant").value.trim();
   const actualCurrentRaw = $("actualCurrent").value.trim();
   const actualCumulativeRaw = $("actualCumulative").value.trim();
   const vals = {
     carrier:$("carrier").value,
-    promised:+$("promised").value,
-    instant:+$("instant").value || 0,
-    term:+$("term").value,
-    billMonth:+$("billMonth").value,
+    promised:+promisedRaw,
+    instant:instantRaw === "" ? 0 : +instantRaw,
+    term:+termRaw,
+    billMonth:+billMonthRaw,
     actualCurrent:+actualCurrentRaw,
     actualCumulative:+actualCumulativeRaw
   };
   if(
-    !actualCurrentRaw || !actualCumulativeRaw ||
+    !["AT&T","Verizon","T-Mobile"].includes(vals.carrier) ||
+    !promisedRaw || !termRaw || !billMonthRaw || !actualCurrentRaw || !actualCumulativeRaw ||
     !Number.isFinite(vals.promised) || vals.promised <= 0 ||
     !Number.isFinite(vals.instant) || vals.instant < 0 || vals.instant > vals.promised ||
     ![24,36].includes(vals.term) ||
@@ -215,11 +244,12 @@ $("auditBtn").addEventListener("click", async () => {
     !Number.isFinite(vals.actualCurrent) || vals.actualCurrent < 0 ||
     !Number.isFinite(vals.actualCumulative) || vals.actualCumulative < 0
   ){
-    $("formError").textContent = "Enter valid promotion and bill-credit amounts before running the audit.";
+    $("formError").textContent = "Enter valid values from your actual promotion and bill before running the audit.";
     return;
   }
 
   const result = classify(vals);
+  const qa = exampleMatchQA(vals);
   const receivedTotal = vals.instant + vals.actualCumulative;
   const remaining = Math.max(0, vals.promised - receivedTotal);
 
@@ -229,7 +259,8 @@ $("auditBtn").addEventListener("click", async () => {
   $("surveySwapCompletion")?.remove();
   latestAudit = {
     audit_id:randomId("a"),
-    schema:"dealkeeper_research_audit_v2",
+    schema:"dealkeeper_research_audit_v3",
+    qa_version:"example_copy_guard_v1",
     created_at:new Date().toISOString(),
     carrier:vals.carrier,
     promised_value:vals.promised,
@@ -243,6 +274,10 @@ $("auditBtn").addEventListener("click", async () => {
     remaining_value:+remaining.toFixed(2),
     price_variant:assignedPrice,
     acquisition_source:acquisitionSource,
+    actual_data_confirmed:true,
+    example_match_flag:qa.flag,
+    example_match_score:qa.score,
+    data_quality:qa.flag ? "example_like_needs_review" : "self_attested_actual",
     direct_identifiers_included:false
   };
 
@@ -265,13 +300,21 @@ $("auditBtn").addEventListener("click", async () => {
 
   $("result").hidden = false;
   $("result").scrollIntoView({behavior:"smooth",block:"start"});
-  event("audit_completed",{carrier:vals.carrier,status:result.status,remaining:+remaining.toFixed(2)});
+  event("audit_completed",{
+    carrier:vals.carrier,
+    status:result.status,
+    remaining:+remaining.toFixed(2),
+    data_quality:latestAudit.data_quality,
+    example_match_flag:latestAudit.example_match_flag
+  });
 
   $("submissionStatus").textContent = "Submitting the pseudonymous research record…";
   try{
     await submitResearch("audit_completed", latestAudit);
     latestAuditSubmitted = true;
-    $("submissionStatus").textContent = "Pseudonymous audit record submitted. Your PDF was not uploaded.";
+    $("submissionStatus").textContent = qa.flag
+      ? "Pseudonymous audit record submitted and automatically marked for data-quality review. Your PDF was not uploaded."
+      : "Pseudonymous audit record submitted. Your PDF was not uploaded.";
   }catch(err){
     console.error(err);
     $("submissionStatus").textContent = "The audit worked, but the pseudonymous research record could not be submitted. You can still download it below.";
@@ -283,7 +326,12 @@ $("auditBtn").addEventListener("click", async () => {
 
 $("protectBtn").addEventListener("click", async () => {
   if(!latestAudit) return;
-  event("protect_intent",{status:latestAudit.result_status,remaining:latestAudit.remaining_value});
+  event("protect_intent",{
+    status:latestAudit.result_status,
+    remaining:latestAudit.remaining_value,
+    data_quality:latestAudit.data_quality,
+    example_match_flag:latestAudit.example_match_flag
+  });
   $("intentThanks").hidden = false;
   if(latestProtectSubmitted) return;
   try{
