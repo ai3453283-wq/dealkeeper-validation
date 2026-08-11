@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DealKeeper — Free Carrier Deal Audit</title>
+  <meta name="description" content="Check whether your AT&T, Verizon or T-Mobile promotional credits match the deal you were promised. Independent research beta.">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs" type="module"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">DealKeeper <span>Research Beta</span></div>
+      <nav>
+        <a href="#audit">Free audit</a>
+        <a href="research.html">Research</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="eyebrow">INDEPENDENT U.S. WIRELESS PROMOTION AUDIT</div>
+      <h1>Your carrier promised you a deal.<br>Make sure you get every dollar.</h1>
+      <p class="lede">
+        DealKeeper compares the promotional credits on your wireless bill with the deal you were promised.
+        This is an early research beta for AT&amp;T, Verizon and T-Mobile.
+      </p>
+      <div class="trust-row">
+        <div>✓ No carrier password required</div>
+        <div>✓ PDF processed in your browser</div>
+        <div>✓ Independent — not affiliated with any carrier</div>
+      </div>
+      <a class="cta" href="#audit">Start free deal audit</a>
+    </section>
+
+    <section class="container section">
+      <div class="money-card">
+        <div>
+          <div class="small-label">Example</div>
+          <div class="money">$1,100 promised</div>
+          <p>Your promotion may be spread across 24–36 monthly bill credits.</p>
+        </div>
+        <div class="arrow">→</div>
+        <div>
+          <div class="small-label">DealKeeper watches</div>
+          <div class="money">$30.56 / month</div>
+          <p>We compare what should appear with what actually appears.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="audit" class="container section">
+      <div class="panel">
+        <div class="step">STEP 1</div>
+        <h2>Tell us what you were promised</h2>
+        <div class="grid two">
+          <label>Carrier
+            <select id="carrier">
+              <option value="AT&T">AT&amp;T</option>
+              <option value="Verizon">Verizon</option>
+              <option value="T-Mobile">T-Mobile</option>
+            </select>
+          </label>
+          <label>Promised promotional value ($)
+            <input id="promised" type="number" min="1" step="0.01" value="1100">
+          </label>
+          <label>Promotion term
+            <select id="term">
+              <option value="36">36 months</option>
+              <option value="24">24 months</option>
+            </select>
+          </label>
+          <label>Which bill month are you on?
+            <input id="billMonth" type="number" min="1" max="36" value="6">
+          </label>
+        </div>
+
+        <details class="details">
+          <summary>Optional: account for an upfront trade-in value</summary>
+          <label>Upfront / instant trade-in value ($)
+            <input id="instant" type="number" min="0" step="0.01" value="0">
+          </label>
+          <p class="hint">Some promotions split the value between an upfront trade-in amount and recurring credits.</p>
+        </details>
+      </div>
+
+      <div class="panel">
+        <div class="step">STEP 2</div>
+        <h2>Check your current bill</h2>
+        <p class="hint">
+          You can enter the credit manually. Optional PDF extraction runs locally in your browser;
+          this research page does not upload your PDF.
+        </p>
+
+        <div class="grid two">
+          <label>Promotional credit on this bill ($)
+            <input id="actualCurrent" type="number" min="0" step="0.01" placeholder="e.g. 30.56">
+          </label>
+          <label>Total promotional credits received so far ($)
+            <input id="actualCumulative" type="number" min="0" step="0.01" placeholder="e.g. 183.36">
+          </label>
+        </div>
+
+        <div class="upload-box">
+          <input id="pdfInput" type="file" accept="application/pdf">
+          <div>
+            <strong>Optional: choose a wireless bill PDF</strong>
+            <div class="hint">Processed on-device. We only show extracted text to you.</div>
+          </div>
+        </div>
+        <button id="extractBtn" class="button secondary" type="button">Extract bill text locally</button>
+        <div id="pdfStatus" class="hint"></div>
+
+        <details id="textDetails" class="details" hidden>
+          <summary>Review locally extracted text</summary>
+          <textarea id="extractedText" rows="9" readonly></textarea>
+          <p class="hint">
+            The prototype intentionally does not auto-submit this text. Confirm amounts above yourself.
+          </p>
+        </details>
+      </div>
+
+      <div class="panel consent-panel">
+        <label class="checkbox">
+          <input id="consent" type="checkbox">
+          <span>
+            I understand this is a research beta, not a carrier service or legal/financial advice.
+            I want to run an independent estimate using the values I provide.
+          </span>
+        </label>
+        <button id="auditBtn" class="button primary" type="button">Run my free audit</button>
+        <div id="formError" class="error"></div>
+      </div>
+
+      <section id="result" class="result-card" hidden>
+        <div class="status-line">
+          <span id="statusPill" class="pill">ON TRACK</span>
+          <span id="confidenceLabel" class="confidence">Research estimate</span>
+        </div>
+        <h2 id="resultHeadline">Your credits appear to match.</h2>
+
+        <div class="metrics">
+          <div><span>Promised</span><strong id="mPromised">$0</strong></div>
+          <div><span>Received</span><strong id="mReceived">$0</strong></div>
+          <div><span>Still at risk</span><strong id="mRemaining">$0</strong></div>
+          <div><span>Expected / month</span><strong id="mExpected">$0</strong></div>
+        </div>
+
+        <div id="explanation" class="explanation"></div>
+
+        <div class="protection">
+          <div>
+            <div class="small-label">WILLINGNESS-TO-PAY TEST</div>
+            <h3>Would you pay to protect the rest of this deal?</h3>
+            <p>
+              A future DealKeeper service would check every bill until your promotion ends and flag missing or reduced credits.
+            </p>
+          </div>
+          <div class="price-block">
+            <div class="price" id="price">$12.99/year</div>
+            <button id="protectBtn" class="button primary" type="button">Yes — protect this deal</button>
+            <div class="hint">No payment is taken in this research build.</div>
+          </div>
+        </div>
+
+        <div id="intentThanks" class="thankyou" hidden>
+          Purchase intent recorded on this device. Thank you — this helps us decide whether to build DealKeeper.
+        </div>
+
+        <hr>
+        <div class="research-share">
+          <h3>Help validate DealKeeper with real bills</h3>
+          <p>
+            We are looking for the first 30 U.S. wireless customers with an active device promotion.
+            Export a small anonymous research record — no PDF, name, phone number, address or account number is included.
+          </p>
+          <button id="downloadBtn" class="button secondary" type="button">Download anonymous audit record</button>
+          <button id="copyBtn" class="button ghost" type="button">Copy anonymous audit record</button>
+          <p class="hint">
+            Central submission is intentionally disabled until a research endpoint is connected.
+          </p>
+        </div>
+      </section>
+    </section>
+
+    <section class="container section">
+      <div class="panel">
+        <div class="step">WHY THIS EXISTS</div>
+        <h2>Bill credits can last for years.</h2>
+        <p>
+          Promotions may be spread over 24–36 bills and can involve activation windows, catch-up credits and eligibility conditions.
+          DealKeeper is testing whether an independent, simple reconciliation layer is useful enough for consumers to pay for.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>DealKeeper Research Beta</div>
+      <div>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="research.html">Research protocol</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
