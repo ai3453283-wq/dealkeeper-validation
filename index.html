@@ -34,6 +34,16 @@
         <div>✓ Independent — not affiliated with any carrier</div>
       </div>
       <a class="cta" href="#audit">Start free deal audit</a>
+      <p id="surveySwapKarmaIntro" class="hint" style="margin-top:14px" hidden>PS: This survey contains Karma to get free survey responses at SurveySwap.io</p>
+      <script>
+        (() => {
+          const src = (new URLSearchParams(location.search).get('src') || '').toLowerCase();
+          const stored = (localStorage.getItem('dk_acquisition_source_v1') || '').toLowerCase();
+          if (src === 'surveyswap' || stored === 'surveyswap') {
+            document.getElementById('surveySwapKarmaIntro').hidden = false;
+          }
+        })();
+      </script>
     </section>
 
     <section class="container section">
