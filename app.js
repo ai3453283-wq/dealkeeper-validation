@@ -8,10 +8,21 @@ localStorage.setItem("dk_price_v1", assignedPrice);
 $("price").textContent = `$${assignedPrice.toFixed(2)}/year`;
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xjybwwbv";
+const SURVEYCIRCLE_CODE = "V2AL-KHJP-5H71-9A52";
+const SURVEYCIRCLE_REDEEM_URL = "https://www.surveycircle.com/V2AL-KHJP-5H71-9A52/";
 const sourceParam = new URLSearchParams(location.search).get("src");
 const cleanSource = (sourceParam || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40);
 if(cleanSource) localStorage.setItem("dk_acquisition_source_v1", cleanSource);
 const acquisitionSource = localStorage.getItem("dk_acquisition_source_v1") || "direct";
+
+if(acquisitionSource === "surveycircle"){
+  const note = document.createElement("div");
+  note.className = "hint";
+  note.style.marginTop = "14px";
+  note.textContent = "SurveyCircle participant? Complete the audit and your personal SurveyCircle redeem code will appear on the result page.";
+  const hero = document.querySelector(".hero");
+  hero?.appendChild(note);
+}
 
 function randomId(prefix){
   const value = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -107,6 +118,24 @@ function classify({carrier,promised,instant,term,billMonth,actualCurrent,actualC
     explanation:`The values you entered are consistent with a simple monthly credit schedule. Exact promotion terms still control.`};
 }
 
+function showSurveyCircleCompletion(){
+  if(acquisitionSource !== "surveycircle" || !latestAudit) return;
+  if($("surveyCircleCompletion")) return;
+
+  const block = document.createElement("div");
+  block.id = "surveyCircleCompletion";
+  block.className = "thankyou";
+  block.style.marginTop = "18px";
+  block.innerHTML = `
+    <strong>SurveyCircle completion</strong><br>
+    Redeem your SurveyCircle points with code <strong>${SURVEYCIRCLE_CODE}</strong>.<br>
+    <a href="${SURVEYCIRCLE_REDEEM_URL}" target="_blank" rel="noopener">Redeem Survey Code with one click</a>
+  `;
+
+  $("result")?.appendChild(block);
+  event("surveycircle_code_shown",{audit_id:latestAudit.audit_id});
+}
+
 $("extractBtn").addEventListener("click", async () => {
   const file = $("pdfInput").files[0];
   if(!file){ $("pdfStatus").textContent = "Choose a PDF first."; return; }
@@ -167,6 +196,7 @@ $("auditBtn").addEventListener("click", async () => {
 
   latestAuditSubmitted = false;
   latestProtectSubmitted = false;
+  $("surveyCircleCompletion")?.remove();
   latestAudit = {
     audit_id:randomId("a"),
     schema:"dealkeeper_research_audit_v2",
@@ -216,6 +246,8 @@ $("auditBtn").addEventListener("click", async () => {
     console.error(err);
     $("submissionStatus").textContent = "The audit worked, but the pseudonymous research record could not be submitted. You can still download it below.";
   }
+
+  showSurveyCircleCompletion();
 });
 
 $("protectBtn").addEventListener("click", async () => {
