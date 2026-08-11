@@ -50,7 +50,7 @@ async function submitResearch(eventType, audit){
     expected_monthly_credit:audit.expected_monthly_credit,
     remaining_value:audit.remaining_value,
     price_variant:audit.price_variant,
-    pii_included:false,
+    direct_identifiers_included:false,
     pdf_uploaded:false,
     source_host:location.host
   };
@@ -132,17 +132,27 @@ $("auditBtn").addEventListener("click", async () => {
     $("formError").textContent = "Please confirm the research-beta consent first.";
     return;
   }
+  const actualCurrentRaw = $("actualCurrent").value.trim();
+  const actualCumulativeRaw = $("actualCumulative").value.trim();
   const vals = {
     carrier:$("carrier").value,
     promised:+$("promised").value,
     instant:+$("instant").value || 0,
     term:+$("term").value,
     billMonth:+$("billMonth").value,
-    actualCurrent:+$("actualCurrent").value,
-    actualCumulative:+$("actualCumulative").value
+    actualCurrent:+actualCurrentRaw,
+    actualCumulative:+actualCumulativeRaw
   };
-  if(!vals.promised || !vals.actualCurrent && vals.actualCurrent !== 0 || !Number.isFinite(vals.actualCumulative)){
-    $("formError").textContent = "Enter the promised value and bill credit amounts.";
+  if(
+    !actualCurrentRaw || !actualCumulativeRaw ||
+    !Number.isFinite(vals.promised) || vals.promised <= 0 ||
+    !Number.isFinite(vals.instant) || vals.instant < 0 || vals.instant > vals.promised ||
+    ![24,36].includes(vals.term) ||
+    !Number.isInteger(vals.billMonth) || vals.billMonth < 1 || vals.billMonth > vals.term ||
+    !Number.isFinite(vals.actualCurrent) || vals.actualCurrent < 0 ||
+    !Number.isFinite(vals.actualCumulative) || vals.actualCumulative < 0
+  ){
+    $("formError").textContent = "Enter valid promotion and bill-credit amounts before running the audit.";
     return;
   }
 
@@ -167,7 +177,7 @@ $("auditBtn").addEventListener("click", async () => {
     expected_monthly_credit:+result.monthlyExpected.toFixed(2),
     remaining_value:+remaining.toFixed(2),
     price_variant:assignedPrice,
-    pii_included:false
+    direct_identifiers_included:false
   };
 
   const pill = $("statusPill");
@@ -191,14 +201,14 @@ $("auditBtn").addEventListener("click", async () => {
   $("result").scrollIntoView({behavior:"smooth",block:"start"});
   event("audit_completed",{carrier:vals.carrier,status:result.status,remaining:+remaining.toFixed(2)});
 
-  $("submissionStatus").textContent = "Submitting the anonymous research record…";
+  $("submissionStatus").textContent = "Submitting the pseudonymous research record…";
   try{
     await submitResearch("audit_completed", latestAudit);
     latestAuditSubmitted = true;
-    $("submissionStatus").textContent = "Anonymous audit record submitted. Your PDF was not uploaded.";
+    $("submissionStatus").textContent = "Pseudonymous audit record submitted. Your PDF was not uploaded.";
   }catch(err){
     console.error(err);
-    $("submissionStatus").textContent = "The audit worked, but the anonymous research record could not be submitted. You can still download it below.";
+    $("submissionStatus").textContent = "The audit worked, but the pseudonymous research record could not be submitted. You can still download it below.";
   }
 });
 
