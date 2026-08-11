@@ -8,6 +8,10 @@ localStorage.setItem("dk_price_v1", assignedPrice);
 $("price").textContent = `$${assignedPrice.toFixed(2)}/year`;
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xjybwwbv";
+const sourceParam = new URLSearchParams(location.search).get("src");
+const cleanSource = (sourceParam || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40);
+if(cleanSource) localStorage.setItem("dk_acquisition_source_v1", cleanSource);
+const acquisitionSource = localStorage.getItem("dk_acquisition_source_v1") || "direct";
 
 function randomId(prefix){
   const value = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -26,7 +30,7 @@ let latestProtectSubmitted = false;
 
 function event(type, data={}) {
   const events = JSON.parse(localStorage.getItem("dk_events_v1") || "[]");
-  events.push({ts:new Date().toISOString(), type, price_variant:assignedPrice, ...data});
+  events.push({ts:new Date().toISOString(), type, price_variant:assignedPrice, acquisition_source:acquisitionSource, ...data});
   localStorage.setItem("dk_events_v1", JSON.stringify(events));
 }
 event("landing_view");
@@ -50,6 +54,7 @@ async function submitResearch(eventType, audit){
     expected_monthly_credit:audit.expected_monthly_credit,
     remaining_value:audit.remaining_value,
     price_variant:audit.price_variant,
+    acquisition_source:acquisitionSource,
     direct_identifiers_included:false,
     pdf_uploaded:false,
     source_host:location.host
@@ -177,6 +182,7 @@ $("auditBtn").addEventListener("click", async () => {
     expected_monthly_credit:+result.monthlyExpected.toFixed(2),
     remaining_value:+remaining.toFixed(2),
     price_variant:assignedPrice,
+    acquisition_source:acquisitionSource,
     direct_identifiers_included:false
   };
 
