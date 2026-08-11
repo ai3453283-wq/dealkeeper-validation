@@ -49,15 +49,15 @@
     <section class="container section">
       <div class="money-card">
         <div>
-          <div class="small-label">Example</div>
-          <div class="money">$1,100 promised</div>
-          <p>Your promotion may be spread across 24–36 monthly bill credits.</p>
+          <div class="small-label">Typical promotion</div>
+          <div class="money">$500–$1,900 promised</div>
+          <p>Your exact offer may be spread across 24–36 monthly bill credits.</p>
         </div>
         <div class="arrow">→</div>
         <div>
-          <div class="small-label">DealKeeper watches</div>
-          <div class="money">$30.56 / month</div>
-          <p>We compare what should appear with what actually appears.</p>
+          <div class="small-label">DealKeeper checks</div>
+          <div class="money">Your actual bill credits</div>
+          <p>Enter the values from your own promotion and bill — not example numbers.</p>
         </div>
       </div>
     </section>
@@ -66,32 +66,35 @@
       <div class="panel">
         <div class="step">STEP 1</div>
         <h2>Tell us what you were promised</h2>
+        <p class="hint"><strong>Research quality:</strong> use the values from your own wireless promotion. Example or invented values should not be entered.</p>
         <div class="grid two">
           <label>Carrier
             <select id="carrier">
+              <option value="" selected disabled>Select your carrier</option>
               <option value="AT&T">AT&amp;T</option>
               <option value="Verizon">Verizon</option>
               <option value="T-Mobile">T-Mobile</option>
             </select>
           </label>
           <label>Promised promotional value ($)
-            <input id="promised" type="number" min="1" step="0.01" value="1100">
+            <input id="promised" type="number" min="1" step="0.01" placeholder="Enter your promised value">
           </label>
           <label>Promotion term
             <select id="term">
+              <option value="" selected disabled>Select 24 or 36 months</option>
               <option value="36">36 months</option>
               <option value="24">24 months</option>
             </select>
           </label>
           <label>Which bill month are you on?
-            <input id="billMonth" type="number" min="1" max="36" value="6">
+            <input id="billMonth" type="number" min="1" max="36" placeholder="Enter your current bill month">
           </label>
         </div>
 
         <details class="details">
           <summary>Optional: account for an upfront trade-in value</summary>
           <label>Upfront / instant trade-in value ($)
-            <input id="instant" type="number" min="0" step="0.01" value="0">
+            <input id="instant" type="number" min="0" step="0.01" placeholder="Enter 0 if none">
           </label>
           <p class="hint">Some promotions split the value between an upfront trade-in amount and recurring credits.</p>
         </details>
@@ -101,16 +104,16 @@
         <div class="step">STEP 2</div>
         <h2>Check your current bill</h2>
         <p class="hint">
-          You can enter the credit manually. Optional PDF extraction runs locally in your browser;
+          Enter the amounts exactly as shown on your own bill. Optional PDF extraction runs locally in your browser;
           this research page does not upload your PDF.
         </p>
 
         <div class="grid two">
           <label>Promotional credit on this bill ($)
-            <input id="actualCurrent" type="number" min="0" step="0.01" placeholder="e.g. 30.56">
+            <input id="actualCurrent" type="number" min="0" step="0.01" placeholder="Enter the credit from this bill">
           </label>
           <label>Total promotional credits received so far ($)
-            <input id="actualCumulative" type="number" min="0" step="0.01" placeholder="e.g. 183.36">
+            <input id="actualCumulative" type="number" min="0" step="0.01" placeholder="Enter your cumulative credits">
           </label>
         </div>
 
@@ -134,6 +137,12 @@
       </div>
 
       <div class="panel consent-panel">
+        <label class="checkbox">
+          <input id="actualDataConfirm" type="checkbox">
+          <span>
+            I confirm that I entered values from my actual wireless promotion and bill, not copied example values or invented numbers.
+          </span>
+        </label>
         <label class="checkbox">
           <input id="consent" type="checkbox">
           <span>
