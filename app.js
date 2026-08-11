@@ -7,7 +7,22 @@ const assignedPrice = Number(localStorage.getItem("dk_price_v1")) || prices[Math
 localStorage.setItem("dk_price_v1", assignedPrice);
 $("price").textContent = `$${assignedPrice.toFixed(2)}/year`;
 
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xjybwwbv";
+
+function randomId(prefix){
+  const value = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return `${prefix}-${value}`;
+}
+
+let participantId = localStorage.getItem("dk_participant_id_v1");
+if(!participantId){
+  participantId = randomId("p");
+  localStorage.setItem("dk_participant_id_v1", participantId);
+}
+
 let latestAudit = null;
+let latestAuditSubmitted = false;
+let latestProtectSubmitted = false;
 
 function event(type, data={}) {
   const events = JSON.parse(localStorage.getItem("dk_events_v1") || "[]");
@@ -15,6 +30,38 @@ function event(type, data={}) {
   localStorage.setItem("dk_events_v1", JSON.stringify(events));
 }
 event("landing_view");
+
+async function submitResearch(eventType, audit){
+  const payload = {
+    _subject: `DealKeeper research: ${eventType}`,
+    event_type:eventType,
+    participant_id:participantId,
+    audit_id:audit.audit_id,
+    schema:audit.schema,
+    created_at:new Date().toISOString(),
+    carrier:audit.carrier,
+    promised_value:audit.promised_value,
+    instant_value:audit.instant_value,
+    term_months:audit.term_months,
+    bill_month:audit.bill_month,
+    actual_current_credit:audit.actual_current_credit,
+    cumulative_recurring_credit:audit.cumulative_recurring_credit,
+    result_status:audit.result_status,
+    expected_monthly_credit:audit.expected_monthly_credit,
+    remaining_value:audit.remaining_value,
+    price_variant:audit.price_variant,
+    pii_included:false,
+    pdf_uploaded:false,
+    source_host:location.host
+  };
+
+  const response = await fetch(FORMSPREE_ENDPOINT,{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify(payload)
+  });
+  if(!response.ok) throw new Error(`Formspree ${response.status}`);
+}
 
 function money(n){return `$${Number(n||0).toFixed(2)}`}
 
@@ -79,7 +126,7 @@ $("extractBtn").addEventListener("click", async () => {
   }
 });
 
-$("auditBtn").addEventListener("click", () => {
+$("auditBtn").addEventListener("click", async () => {
   $("formError").textContent = "";
   if(!$("consent").checked){
     $("formError").textContent = "Please confirm the research-beta consent first.";
@@ -103,8 +150,11 @@ $("auditBtn").addEventListener("click", () => {
   const receivedTotal = vals.instant + vals.actualCumulative;
   const remaining = Math.max(0, vals.promised - receivedTotal);
 
+  latestAuditSubmitted = false;
+  latestProtectSubmitted = false;
   latestAudit = {
-    schema:"dealkeeper_research_audit_v1",
+    audit_id:randomId("a"),
+    schema:"dealkeeper_research_audit_v2",
     created_at:new Date().toISOString(),
     carrier:vals.carrier,
     promised_value:vals.promised,
@@ -140,12 +190,31 @@ $("auditBtn").addEventListener("click", () => {
   $("result").hidden = false;
   $("result").scrollIntoView({behavior:"smooth",block:"start"});
   event("audit_completed",{carrier:vals.carrier,status:result.status,remaining:+remaining.toFixed(2)});
+
+  $("submissionStatus").textContent = "Submitting the anonymous research record…";
+  try{
+    await submitResearch("audit_completed", latestAudit);
+    latestAuditSubmitted = true;
+    $("submissionStatus").textContent = "Anonymous audit record submitted. Your PDF was not uploaded.";
+  }catch(err){
+    console.error(err);
+    $("submissionStatus").textContent = "The audit worked, but the anonymous research record could not be submitted. You can still download it below.";
+  }
 });
 
-$("protectBtn").addEventListener("click", () => {
+$("protectBtn").addEventListener("click", async () => {
   if(!latestAudit) return;
   event("protect_intent",{status:latestAudit.result_status,remaining:latestAudit.remaining_value});
   $("intentThanks").hidden = false;
+  if(latestProtectSubmitted) return;
+  try{
+    await submitResearch("protect_intent", latestAudit);
+    latestProtectSubmitted = true;
+    $("intentThanks").textContent = "Purchase intent submitted. Thank you — no payment was taken.";
+  }catch(err){
+    console.error(err);
+    $("intentThanks").textContent = "Purchase intent was recorded on this device, but could not be submitted. No payment was taken.";
+  }
 });
 
 function auditBlob(){
