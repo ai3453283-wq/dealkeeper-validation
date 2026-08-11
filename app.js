@@ -10,6 +10,8 @@ $("price").textContent = `$${assignedPrice.toFixed(2)}/year`;
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xjybwwbv";
 const SURVEYCIRCLE_CODE = "V2AL-KHJP-5H71-9A52";
 const SURVEYCIRCLE_REDEEM_URL = "https://www.surveycircle.com/V2AL-KHJP-5H71-9A52/";
+const SURVEYSWAP_CODE = "L35G-K98B-MFYW";
+const SURVEYSWAP_REDEEM_URL = "https://surveyswap.io/sr/L35G-K98B-MFYW";
 const sourceParam = new URLSearchParams(location.search).get("src");
 const cleanSource = (sourceParam || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40);
 if(cleanSource) localStorage.setItem("dk_acquisition_source_v1", cleanSource);
@@ -20,6 +22,15 @@ if(acquisitionSource === "surveycircle"){
   note.className = "hint";
   note.style.marginTop = "14px";
   note.textContent = "SurveyCircle participant? Complete the audit and your personal SurveyCircle redeem code will appear on the result page.";
+  const hero = document.querySelector(".hero");
+  hero?.appendChild(note);
+}
+
+if(acquisitionSource === "surveyswap"){
+  const note = document.createElement("div");
+  note.className = "hint";
+  note.style.marginTop = "14px";
+  note.textContent = "SurveySwap participant? Complete the Deal Audit and your SurveySwap completion link/code will appear on the result page so you can claim Karma.";
   const hero = document.querySelector(".hero");
   hero?.appendChild(note);
 }
@@ -136,6 +147,24 @@ function showSurveyCircleCompletion(){
   event("surveycircle_code_shown",{audit_id:latestAudit.audit_id});
 }
 
+function showSurveySwapCompletion(){
+  if(acquisitionSource !== "surveyswap" || !latestAudit) return;
+  if($("surveySwapCompletion")) return;
+
+  const block = document.createElement("div");
+  block.id = "surveySwapCompletion";
+  block.className = "thankyou";
+  block.style.marginTop = "18px";
+  block.innerHTML = `
+    <strong>SurveySwap completion</strong><br>
+    Your Deal Audit is complete. Claim your SurveySwap Karma with code <strong>${SURVEYSWAP_CODE}</strong>.<br>
+    <a href="${SURVEYSWAP_REDEEM_URL}" target="_blank" rel="noopener">Claim SurveySwap Karma</a>
+  `;
+
+  $("result")?.appendChild(block);
+  event("surveyswap_code_shown",{audit_id:latestAudit.audit_id});
+}
+
 $("extractBtn").addEventListener("click", async () => {
   const file = $("pdfInput").files[0];
   if(!file){ $("pdfStatus").textContent = "Choose a PDF first."; return; }
@@ -197,6 +226,7 @@ $("auditBtn").addEventListener("click", async () => {
   latestAuditSubmitted = false;
   latestProtectSubmitted = false;
   $("surveyCircleCompletion")?.remove();
+  $("surveySwapCompletion")?.remove();
   latestAudit = {
     audit_id:randomId("a"),
     schema:"dealkeeper_research_audit_v2",
@@ -248,6 +278,7 @@ $("auditBtn").addEventListener("click", async () => {
   }
 
   showSurveyCircleCompletion();
+  showSurveySwapCompletion();
 });
 
 $("protectBtn").addEventListener("click", async () => {
