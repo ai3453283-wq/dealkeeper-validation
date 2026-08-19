@@ -1,13 +1,17 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DealKeeper — Research Protocol</title><link rel="stylesheet" href="styles.css"></head><body><main class="container prose">
 <a href="index.html">← DealKeeper</a>
-<h1>First 30 Deal Audits</h1>
-<p>DealKeeper is testing one narrow question: can an independent service reliably detect when promotional wireless bill credits do not match what a U.S. customer was promised, and is that protection valuable enough to pay for?</p>
-<h2>Who we want</h2>
-<ul><li>U.S. AT&amp;T, Verizon or T-Mobile customer</li><li>Active device promotion or trade-in promotion</li><li>At least one current bill</li><li>Willing to compare the original promise with actual credits</li></ul>
-<h2>Stage 1 — 30 audits</h2>
-<p>We will not ask for carrier login credentials. After explicit consent, the site submits a small pseudonymous research record through Formspree. It excludes the PDF, extracted bill text, name, phone, address and carrier account number. The PDF remains on-device in this build.</p>
+<h1>DealKeeper Validation Protocol</h1>
+<p>DealKeeper is testing two related but separate questions: can an independent service reliably detect when promotional wireless bill credits do not match what a U.S. customer was promised, and do people understand and value that protection enough to pay for it?</p>
+<h2>Track A — First 30 real-bill audits</h2>
+<ul><li>U.S. AT&amp;T, Verizon or T-Mobile customer</li><li>Active device promotion or trade-in promotion</li><li>At least one current bill</li><li>Financial values entered from the real promotion and bill</li><li>No carrier login, phone number, account number, contract/order ID or other direct identifier is needed</li></ul>
+<p>Real Deal records are marked <code>data_mode=real</code> and <code>eligible_for_first30=true</code>. These are the only records used to evaluate real discrepancy prevalence, reconciliation accuracy and real purchase intent.</p>
+<h2>Track B — Synthetic product demo</h2>
+<p>Anyone may try DealKeeper without having an active promotion. In Demo mode every scenario value may be fictional. Demo records are marked <code>data_mode=demo</code>, <code>synthetic_data=true</code> and <code>eligible_for_first30=false</code>. They are never mixed with real-bill evidence.</p>
+<p>The synthetic track measures whether people understand the product, can see the value of monitoring a long-running promotion, and would hypothetically consider paying for a service like DealKeeper if they had a qualifying deal.</p>
 <h2>What we measure</h2>
-<ul><li>Can the customer identify the original promised value?</li><li>Can the bill credit be extracted or confirmed?</li><li>Does the simple schedule match?</li><li>How often do cases require catch-up/grace-period logic?</li><li>How many material discrepancies appear?</li><li>Would the customer pay $7.99, $12.99 or $19.99/year to monitor the remaining promotional value?</li></ul>
+<ul><li>Can real customers identify the original promised value and actual bill credits?</li><li>Does the simple schedule match the real bill?</li><li>How often do real cases require catch-up/grace-period logic?</li><li>How many material discrepancies appear in the clean real-bill cohort?</li><li>Would a real customer pay $7.99, $12.99 or $19.99/year to monitor the remaining promotional value?</li><li>Can non-eligible/demo users understand the value proposition without sharing real bill data?</li><li>Would demo users hypothetically consider the same price points if they had such a deal?</li></ul>
+<h2>Privacy and data-quality gates</h2>
+<p>The research build does not request carrier credentials or direct identifiers. Optional bill PDFs remain on-device. Real records carry data-quality fields and synthetic demo records are structurally excluded from the First 30 cohort.</p>
 <h2>Internal gates</h2>
-<p>The project should not move to a production MVP unless real-user data supports reliable reconciliation, low false-alert rates and real willingness to pay.</p>
+<p>The project should not move to a production MVP unless real-user evidence supports reliable reconciliation, low false-alert rates and credible willingness to pay. Synthetic demo interest can support product-comprehension decisions, but cannot substitute for real-bill evidence.</p>
 </main></body></html>
