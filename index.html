@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DealKeeper — Free Carrier Deal Audit</title>
-  <meta name="description" content="Check whether your AT&T, Verizon or T-Mobile promotional credits match the deal you were promised. Independent research beta.">
+  <meta name="description" content="Check a real AT&T, Verizon or T-Mobile promotion, or try DealKeeper safely with made-up numbers. Independent research beta.">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.6.82/pdf.min.mjs" type="module"></script>
 </head>
@@ -25,15 +25,15 @@
       <div class="eyebrow">INDEPENDENT U.S. WIRELESS PROMOTION AUDIT</div>
       <h1>Your carrier promised you a deal.<br>Make sure you get every dollar.</h1>
       <p class="lede">
-        DealKeeper compares the promotional credits on your wireless bill with the deal you were promised.
-        This is an early research beta for AT&amp;T, Verizon and T-Mobile.
+        DealKeeper compares promotional bill credits with the deal that was promised. Have a real AT&amp;T, Verizon or T-Mobile promotion? Check it. No active promotion? Try the same logic safely with made-up numbers.
       </p>
       <div class="trust-row">
-        <div>✓ No carrier password required</div>
-        <div>✓ PDF processed in your browser</div>
+        <div>✓ No carrier login required</div>
+        <div>✓ No real phone/account/contract number needed</div>
+        <div>✓ Optional PDF stays in your browser</div>
         <div>✓ Independent — not affiliated with any carrier</div>
       </div>
-      <a class="cta" href="#audit">Start free deal audit</a>
+      <a class="cta" href="#audit">Choose how to try DealKeeper</a>
       <p id="surveySwapKarmaIntro" class="hint" style="margin-top:14px" hidden>PS: This survey contains Karma to get free survey responses at SurveySwap.io</p>
       <script>
         (() => {
@@ -49,35 +49,55 @@
     <section class="container section">
       <div class="money-card">
         <div>
-          <div class="small-label">Typical promotion</div>
-          <div class="money">$500–$1,900 promised</div>
-          <p>Your exact offer may be spread across 24–36 monthly bill credits.</p>
+          <div class="small-label">REAL DEAL</div>
+          <div class="money">Check your actual credits</div>
+          <p>Use only the financial values needed for reconciliation. DealKeeper does not need your real phone, account or contract number.</p>
         </div>
-        <div class="arrow">→</div>
+        <div class="arrow">or</div>
         <div>
-          <div class="small-label">DealKeeper checks</div>
-          <div class="money">Your actual bill credits</div>
-          <p>Enter the values from your own promotion and bill — not example numbers.</p>
+          <div class="small-label">SAFE DEMO</div>
+          <div class="money">Make up the whole scenario</div>
+          <p>No promotion? Invent the carrier, deal value and bill-credit amounts to see exactly what DealKeeper would do.</p>
         </div>
       </div>
     </section>
 
     <section id="audit" class="container section">
+      <div class="panel mode-panel">
+        <div class="step">START HERE</div>
+        <h2>How do you want to use DealKeeper?</h2>
+        <div class="mode-grid">
+          <button id="modeRealBtn" class="mode-card active" type="button" aria-pressed="true">
+            <span class="mode-title">Check my real deal</span>
+            <span class="mode-copy">For U.S. customers with an active AT&amp;T, Verizon or T-Mobile device/trade-in promotion and at least one bill.</span>
+            <span class="mode-tag">Counts toward First 30 research</span>
+          </button>
+          <button id="modeDemoBtn" class="mode-card" type="button" aria-pressed="false">
+            <span class="mode-title">Try with made-up numbers</span>
+            <span class="mode-copy">For anyone who wants to understand DealKeeper without sharing or even having a real promotion.</span>
+            <span class="mode-tag">Synthetic demo — never mixed with real audits</span>
+          </button>
+        </div>
+        <div id="modeNotice" class="privacy-banner">
+          <strong>Privacy by design:</strong> never enter a real phone number, carrier account number, contract/order ID, PIN, password, full name or street address. DealKeeper does not need them. In Demo mode, every value may be fictional.
+        </div>
+      </div>
+
       <div class="panel">
         <div class="step">STEP 1</div>
-        <h2>Tell us what you were promised</h2>
-        <p class="hint"><strong>Research quality:</strong> use the values from your own wireless promotion. Example or invented values should not be entered.</p>
+        <h2 id="step1Title">Tell us what you were promised</h2>
+        <p id="step1Hint" class="hint"><strong>Real audit:</strong> use the financial values from your actual wireless promotion. No identity or contract identifiers are requested.</p>
         <div class="grid two">
           <label>Carrier
             <select id="carrier">
-              <option value="" selected disabled>Select your carrier</option>
+              <option value="" selected disabled>Select a carrier</option>
               <option value="AT&T">AT&amp;T</option>
               <option value="Verizon">Verizon</option>
               <option value="T-Mobile">T-Mobile</option>
             </select>
           </label>
           <label>Promised promotional value ($)
-            <input id="promised" type="number" min="1" step="0.01" placeholder="Enter your promised value">
+            <input id="promised" type="number" min="1" step="0.01" placeholder="Enter the promised value">
           </label>
           <label>Promotion term
             <select id="term">
@@ -87,7 +107,7 @@
             </select>
           </label>
           <label>Which bill month are you on?
-            <input id="billMonth" type="number" min="1" max="36" placeholder="Enter your current bill month">
+            <input id="billMonth" type="number" min="1" max="36" placeholder="Enter the current bill month">
           </label>
         </div>
 
@@ -98,58 +118,67 @@
           </label>
           <p class="hint">Some promotions split the value between an upfront trade-in amount and recurring credits.</p>
         </details>
+        <div id="demoTools" class="demo-tools" hidden>
+          <button id="loadDemoBtn" class="button secondary" type="button">Load a made-up example</button>
+          <span class="hint">Or invent your own numbers. Demo values are marked synthetic and excluded from the First 30 real-bill cohort.</span>
+        </div>
       </div>
 
       <div class="panel">
         <div class="step">STEP 2</div>
-        <h2>Check your current bill</h2>
-        <p class="hint">
-          Enter the amounts exactly as shown on your own bill. Optional PDF extraction runs locally in your browser;
-          this research page does not upload your PDF.
+        <h2 id="step2Title">Check your current bill</h2>
+        <p id="step2Hint" class="hint">
+          Enter the credit amounts shown on your own bill. Optional PDF extraction runs locally in your browser; the PDF and extracted text are not submitted.
         </p>
 
         <div class="grid two">
           <label>Promotional credit on this bill ($)
-            <input id="actualCurrent" type="number" min="0" step="0.01" placeholder="Enter the credit from this bill">
+            <input id="actualCurrent" type="number" min="0" step="0.01" placeholder="Enter the credit on this bill">
           </label>
           <label>Total promotional credits received so far ($)
-            <input id="actualCumulative" type="number" min="0" step="0.01" placeholder="Enter your cumulative credits">
+            <input id="actualCumulative" type="number" min="0" step="0.01" placeholder="Enter cumulative credits">
           </label>
         </div>
 
-        <div class="upload-box">
-          <input id="pdfInput" type="file" accept="application/pdf">
-          <div>
-            <strong>Optional: choose a wireless bill PDF</strong>
-            <div class="hint">Processed on-device. We only show extracted text to you.</div>
+        <div id="realPdfTools">
+          <div class="upload-box">
+            <input id="pdfInput" type="file" accept="application/pdf">
+            <div>
+              <strong>Optional: choose a wireless bill PDF</strong>
+              <div class="hint">Processed on-device. The PDF and extracted text are not submitted.</div>
+            </div>
           </div>
-        </div>
-        <button id="extractBtn" class="button secondary" type="button">Extract bill text locally</button>
-        <div id="pdfStatus" class="hint"></div>
+          <button id="extractBtn" class="button secondary" type="button">Extract bill text locally</button>
+          <div id="pdfStatus" class="hint"></div>
 
-        <details id="textDetails" class="details" hidden>
-          <summary>Review locally extracted text</summary>
-          <textarea id="extractedText" rows="9" readonly></textarea>
-          <p class="hint">
-            The prototype intentionally does not auto-submit this text. Confirm amounts above yourself.
-          </p>
-        </details>
+          <details id="textDetails" class="details" hidden>
+            <summary>Review locally extracted text</summary>
+            <textarea id="extractedText" rows="9" readonly></textarea>
+            <p class="hint">The prototype intentionally does not auto-submit extracted text. Confirm the amounts above yourself.</p>
+          </details>
+        </div>
       </div>
 
       <div class="panel consent-panel">
-        <label class="checkbox">
-          <input id="actualDataConfirm" type="checkbox">
-          <span>
-            I confirm that I entered values from my actual wireless promotion and bill, not copied example values or invented numbers.
-          </span>
-        </label>
-        <label class="checkbox">
-          <input id="consent" type="checkbox">
-          <span>
-            I confirm that I am 18 or older, currently live in the United States, use the carrier selected above, and have an active device or trade-in promotion paid through bill credits with at least one bill received. I understand this is a research beta, not a carrier service or legal/financial advice. I agree to submit the pseudonymous, privacy-minimized research fields described in the <a href="privacy.html" target="_blank" rel="noopener">Privacy Notice</a>. My optional PDF stays in my browser and is not submitted.
-          </span>
-        </label>
-        <button id="auditBtn" class="button primary" type="button">Run my free audit</button>
+        <div id="realConsentBlock">
+          <label class="checkbox">
+            <input id="actualDataConfirm" type="checkbox">
+            <span>I confirm that the financial values above came from my actual wireless promotion and bill. I did not enter real phone/account/contract identifiers because DealKeeper does not need them.</span>
+          </label>
+          <label class="checkbox">
+            <input id="consent" type="checkbox">
+            <span>
+              I confirm that I am 18 or older, currently live in the United States, use the carrier selected above, and have an active device or trade-in promotion paid through bill credits with at least one bill received. I understand this is a research beta, not a carrier service or legal/financial advice. I agree to submit the pseudonymous, privacy-minimized research fields described in the <a href="privacy.html" target="_blank" rel="noopener">Privacy Notice</a>. My optional PDF stays in my browser and is not submitted.
+            </span>
+          </label>
+        </div>
+        <div id="demoConsentBlock" hidden>
+          <label class="checkbox">
+            <input id="demoConsent" type="checkbox">
+            <span>I understand this is a synthetic demo. The numbers may be completely made up. I agree to submit only the synthetic scenario values plus a pseudonymous research ID so DealKeeper can measure product comprehension and interest. This demo is excluded from the First 30 real-bill study.</span>
+          </label>
+        </div>
+        <button id="auditBtn" class="button primary" type="button">Run my real deal audit</button>
         <div id="formError" class="error"></div>
       </div>
 
@@ -172,10 +201,8 @@
         <div class="protection">
           <div>
             <div class="small-label">WILLINGNESS-TO-PAY TEST</div>
-            <h3>Would you pay to protect the rest of this deal?</h3>
-            <p>
-              A future DealKeeper service would check every bill until your promotion ends and flag missing or reduced credits.
-            </p>
+            <h3 id="wtpQuestion">Would you pay to protect the rest of this deal?</h3>
+            <p id="wtpCopy">A future DealKeeper service would check every bill until your promotion ends and flag missing or reduced credits.</p>
           </div>
           <div class="price-block">
             <div class="price" id="price">$12.99/year</div>
@@ -184,22 +211,15 @@
           </div>
         </div>
 
-        <div id="intentThanks" class="thankyou" hidden>
-          Purchase intent recorded on this device. Thank you — this helps us decide whether to build DealKeeper.
-        </div>
+        <div id="intentThanks" class="thankyou" hidden>Interest recorded on this device. Thank you.</div>
 
         <hr>
         <div class="research-share">
-          <h3>Help validate DealKeeper with real bills</h3>
-          <p>
-            We are looking for the first 30 U.S. wireless customers with an active device promotion.
-            Export a small pseudonymous research record — no PDF, name, phone number, address or account number is included.
-          </p>
-          <button id="downloadBtn" class="button secondary" type="button">Download anonymous audit record</button>
-          <button id="copyBtn" class="button ghost" type="button">Copy anonymous audit record</button>
-          <p id="submissionStatus" class="hint">
-            When you run an audit, a small pseudonymous research record is submitted to our Formspree research endpoint. Your PDF is not included.
-          </p>
+          <h3 id="researchShareTitle">Help validate DealKeeper with real bills</h3>
+          <p id="researchShareCopy">We are looking for the first 30 U.S. wireless customers with an active device promotion. The research record excludes the PDF, extracted text, name, phone number, address, account number and contract/order ID.</p>
+          <button id="downloadBtn" class="button secondary" type="button">Download pseudonymous audit record</button>
+          <button id="copyBtn" class="button ghost" type="button">Copy pseudonymous audit record</button>
+          <p id="submissionStatus" class="hint">When you run a real audit, a small pseudonymous research record is submitted to our Formspree research endpoint. Your PDF is not included.</p>
         </div>
       </section>
     </section>
@@ -208,10 +228,7 @@
       <div class="panel">
         <div class="step">WHY THIS EXISTS</div>
         <h2>Bill credits can last for years.</h2>
-        <p>
-          Promotions may be spread over 24–36 bills and can involve activation windows, catch-up credits and eligibility conditions.
-          DealKeeper is testing whether an independent, simple reconciliation layer is useful enough for consumers to pay for.
-        </p>
+        <p>Promotions may be spread over 24–36 bills and can involve activation windows, catch-up credits and eligibility conditions. DealKeeper is testing both whether real promotions can be reconciled reliably and whether people understand and value ongoing monitoring before they ever need it.</p>
       </div>
     </section>
   </main>
