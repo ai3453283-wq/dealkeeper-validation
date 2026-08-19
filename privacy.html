@@ -2,18 +2,22 @@
 <a href="index.html">← DealKeeper</a>
 <h1>Research Privacy Notice</h1>
 <p><strong>Status:</strong> validation prototype, not a production privacy policy.</p>
+<h2>Two separate modes</h2>
+<p><strong>Real Deal mode</strong> is for eligible U.S. customers using financial values from an actual AT&amp;T, Verizon or T-Mobile promotion and bill. <strong>Demo mode</strong> is for anyone who wants to try DealKeeper with completely made-up numbers. Demo submissions are marked synthetic and excluded from the First 30 real-bill cohort.</p>
+<h2>Identifiers DealKeeper does not need</h2>
+<p>Do not enter a real phone number, carrier account number, contract or order ID, PIN, password, full name, street address, Social Security number, payment-card data or other credentials. This research build does not request or need those identifiers. If you are only exploring the product, use Demo mode and make up all scenario values.</p>
 <h2>What stays on your device</h2>
-<p>An optional wireless-bill PDF is processed in your browser with PDF.js. DealKeeper does not submit the PDF, the extracted bill text, your carrier password, your name, phone number, address or carrier account number through the research form.</p>
+<p>In Real Deal mode, an optional wireless-bill PDF is processed in your browser with PDF.js. DealKeeper does not submit the PDF or extracted bill text through the research form.</p>
 <h2>What is submitted for research</h2>
-<p>When you consent and run an audit, the site submits a small research record containing a pseudonymous participant ID, audit ID, carrier, promotion amount, upfront value if entered, promotion term, bill month, credit amounts, calculated audit status, expected monthly credit, remaining promotional value and the assigned experiment price. If you click “Yes — protect this deal,” a second event records that purchase intent for the same audit. No payment is taken.</p>
+<p>When you consent and run a Real Deal audit, the site submits a small pseudonymous research record containing a participant ID, audit ID, carrier, promotion amount, upfront value if entered, promotion term, bill month, credit amounts, calculated audit status, expected monthly credit, remaining promotional value, assigned experiment price, acquisition source and data-quality flags. Real records are marked <code>data_mode=real</code> and <code>eligible_for_first30=true</code>.</p>
+<p>When you consent and run Demo mode, the same calculation fields may contain entirely fictional values. Those records are explicitly marked <code>data_mode=demo</code>, <code>synthetic_data=true</code>, <code>data_quality=synthetic_demo</code> and <code>eligible_for_first30=false</code>. They are used only for product-comprehension and hypothetical willingness-to-pay research and are never counted as real-bill evidence.</p>
+<p>If you click the willingness-to-pay button, a second event is recorded for the same audit. Demo interest is stored separately from real purchase intent. No payment is taken.</p>
 <h2>Research service provider</h2>
-<p>Anonymous/pseudonymous research submissions are sent to Formspree, which acts as the form-processing service for this validation study. Like other web services, Formspree may receive ordinary network/request metadata such as IP address, browser headers and timestamps when processing a submission.</p>
+<p>Pseudonymous research submissions are sent to Formspree, which acts as the form-processing service for this validation study. Like other web services, Formspree may receive ordinary network/request metadata such as IP address, browser headers and timestamps when processing a submission.</p>
 <h2>Purpose and retention</h2>
-<p>The data is used only to evaluate whether DealKeeper can reconcile wireless promotions reliably and whether users value ongoing monitoring. Raw first-cohort research submissions are intended to be retained only for the validation period and up to 90 days after the First 30 study closes, after which they should be deleted or reduced to aggregate research statistics.</p>
-<h2>No credentials or sensitive identifiers</h2>
-<p>Do not provide carrier usernames, passwords, Social Security numbers, payment-card data or other credentials. This research build does not request them.</p>
+<p>The data is used only to evaluate whether DealKeeper can reconcile wireless promotions reliably, whether users understand the product, and whether they value ongoing monitoring. Raw first-cohort research submissions are intended to be retained only for the validation period and up to 90 days after the First 30 study closes, after which they should be deleted or reduced to aggregate research statistics.</p>
 <h2>Local browser storage</h2>
-<p>The site stores the assigned price variant, a pseudonymous participant ID and local event history in your browser so the experiment remains consistent across visits. You can clear that data by clearing site storage in your browser.</p>
+<p>The site stores the assigned price variant, a pseudonymous participant ID, acquisition source and local event history in your browser so the experiment remains consistent across visits. You can clear that data by clearing site storage in your browser.</p>
 <h2>Third-party code</h2>
 <p>The prototype loads the open-source PDF.js library from a public CDN in order to read PDF text locally. The selected bill itself is supplied to PDF.js inside your browser.</p>
 </main></body></html>
