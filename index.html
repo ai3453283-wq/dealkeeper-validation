@@ -39,8 +39,7 @@
       <script>
         (() => {
           const src = (new URLSearchParams(location.search).get('src') || '').toLowerCase();
-          const stored = (localStorage.getItem('dk_acquisition_source_v1') || '').toLowerCase();
-          if (src === 'surveyswap' || stored === 'surveyswap') {
+          if (src === 'surveyswap') {
             document.getElementById('surveySwapKarmaIntro').hidden = false;
           }
         })();
