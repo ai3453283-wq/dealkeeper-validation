@@ -1,137 +1,186 @@
-# DealKeeper — First 30 Recruitment Copy
+# DealKeeper — First 30 Recruitment Protocol
 
-Status: LIVE VALIDATION / first 30 U.S. audits.
+Status: LIVE VALIDATION / first 30 U.S. real-bill audits.
 
 Public site:
 https://ai3453283-wq.github.io/dealkeeper-validation/
 
-Use source-specific links below so Formspree records `acquisition_source` without creating extra submissions.
+DealKeeper now has two explicitly separated modes:
+- **Real Deal** — real financial promotion/bill values; eligible for First 30 if all quality gates pass.
+- **Safe Demo** — made-up values; useful for product comprehension and hypothetical willingness-to-pay only; never counted as First 30 evidence.
+
+Use source-specific links so Formspree records `acquisition_source`.
 Do not pretend to be an ordinary consumer if posting as the project operator.
-Follow each community's self-promotion and research rules.
+Follow each community's current self-promotion and research rules.
 Do not unsolicited-DM members of communities that prohibit solicitation.
 
-## Recommended first channels
+## Clean v4 real-audit gate
 
-### r/SampleSize
+Count a submission in the First 30 only when all are true:
+- `schema = dealkeeper_research_audit_v4`
+- `data_mode = real`
+- `eligible_for_first30 = true`
+- `synthetic_data = false`
+- `actual_data_confirmed = true`
+- `event_type = audit_completed`
+- `data_quality = self_attested_actual`, unless a manually reviewed exception is explicitly accepted
+
+Exclude:
+- all `demo_completed` and `demo_protect_intent` events;
+- all internal tests;
+- old v2/v3 rows from clean prospective v4 statistics;
+- the suspicious old SurveySwap v2 response that matched the prior example values.
+
+## Current baseline — 2026-08-20
+
+- Clean v4 real audits: **0**
+- Clean external real protect intents: **0**
+- SurveyCircle: **0 participants**
+- SurveySwap: **blocked**; do not spend more recruitment time there
+- r/SampleSize: **117 views**, roughly **41% U.S.**, **0 completed audits**
+- v4 Safe Demo technical QA: **PASS** (`demo_completed` and `demo_protect_intent` are separated and `eligible_for_first30=false`)
+
+## Recommended next channels
+
+### Direct referral / second-degree U.S. contacts — priority 1
 Tracked link:
-https://ai3453283-wq.github.io/dealkeeper-validation/?src=reddit_samplesize
+https://ai3453283-wq.github.io/dealkeeper-validation/?src=direct_referral
+
+Suggested copy:
+
+Do you currently have an AT&T, Verizon or T-Mobile phone promotion paid through monthly bill credits?
+
+I'm helping test a free independent tool called DealKeeper that checks whether the credits match the deal that was promised. We are looking for the first few real U.S. audits before deciding whether the product should be built further.
+
+It does not need your carrier login, phone number, account number or contract/order ID. The financial promotion values are enough for the check. An optional bill PDF stays in the browser and is not uploaded by this research build.
+
+If you do not have a current promotion, there is also a Safe Demo using made-up numbers so you can see how DealKeeper works without sharing real bill data.
+
+https://ai3453283-wq.github.io/dealkeeper-validation/?src=direct_referral
+
+### General research-permitted community
+Tracked link:
+https://ai3453283-wq.github.io/dealkeeper-validation/?src=community_research
+
+Use only where external research links are allowed.
 
 Suggested title:
-[Casual] Free 2-minute wireless promo audit (US 18+, AT&T / Verizon / T-Mobile customers with an active phone promotion)
+Free independent wireless promo-credit audit / Safe Demo — AT&T, Verizon, T-Mobile
 
 Suggested body:
 I'm testing a small independent consumer research project called DealKeeper.
 
-If your U.S. wireless carrier promised you a device or trade-in promotion paid through monthly bill credits, the free research beta compares the promotional value you were promised with the credits currently showing on your bill.
+If you have a current U.S. AT&T, Verizon or T-Mobile device/trade-in promotion paid through monthly bill credits, the Real Deal mode compares the promised promotion with the credits on your bill.
 
-Eligibility for this validation cohort:
-- age 18+;
-- United States;
-- AT&T, Verizon or T-Mobile;
-- active device/trade-in promotion with at least one current bill.
+If you do not have a current promotion, the Safe Demo lets you make up a scenario and see the same logic without sharing real bill data.
 
-The beta does not ask for a carrier password. Bill-credit amounts can be entered manually. An optional PDF is read locally in the browser and is not uploaded by this build. The research record excludes direct identifiers such as name, phone number, address and account number.
+Privacy design:
+- no carrier login required;
+- no real phone number, account number or contract/order ID needed;
+- optional PDF is processed locally in the browser and is not uploaded in this build;
+- synthetic demo records are explicitly separated from real research evidence.
 
-The purpose is to learn how often real promotions are on track, delayed or mismatched, and whether independent monitoring has enough value to build.
-
-Free audit:
-https://ai3453283-wq.github.io/dealkeeper-validation/?src=reddit_samplesize
+Research page:
+https://ai3453283-wq.github.io/dealkeeper-validation/?src=community_research
 
 Independent research beta; not affiliated with AT&T, Verizon or T-Mobile.
 
-### r/takemysurvey
-Tracked link:
-https://ai3453283-wq.github.io/dealkeeper-validation/?src=reddit_takemysurvey
+### r/SampleSize
+Existing tracked link:
+https://ai3453283-wq.github.io/dealkeeper-validation/?src=reddit_samplesize
 
-Use the same eligibility wording, but follow that community's current requirement to submit the survey/research link in the format its moderators require.
+Existing post produced 117 views but no completed audits. Do not repost the same study immediately. A future repost should only happen if subreddit timing/rules permit and should lead with the new Safe Demo / privacy-reduced flow rather than repeating the prior copy.
 
-### Direct referral / people you know in the U.S.
-Tracked link:
-https://ai3453283-wq.github.io/dealkeeper-validation/?src=direct_referral
+## Carrier communities — permission first
 
-Copy:
-Do you currently have an AT&T, Verizon or T-Mobile phone promotion paid through monthly bill credits?
+Carrier-specific communities contain highly relevant users, but they create strong selection bias and often have anti-solicitation rules.
 
-I'm helping test a free independent tool that checks whether the credits match the deal you were promised. We need the first 30 real U.S. audits before deciding whether to build the product.
+Do not post a DealKeeper recruitment link into a carrier-specific subreddit until current rules have been checked or moderator permission obtained.
 
-It does not need your carrier password. The optional PDF stays in the browser and is not uploaded in this research build.
-
-https://ai3453283-wq.github.io/dealkeeper-validation/?src=direct_referral
-
-## Carrier communities — ask moderators first
-
-Do not post the validation link into a carrier-specific subreddit until its current rules have been checked or moderator permission obtained.
-
-Current research note: r/verizon explicitly prohibits solicitation, including referral-style solicitation, so do NOT recruit there without explicit moderator permission.
+Known rule: r/verizon explicitly prohibits solicitation, including referral codes, direct messages and requests to take conversations to DM. Do not recruit there without moderator permission.
 
 Moderator permission request template:
 
-Hello moderators — I'm running a small, no-payment consumer research validation for U.S. wireless customers with active device/trade-in bill-credit promotions. The tool does not ask for carrier credentials and does not upload the optional bill PDF. It produces a simple independent audit and collects a privacy-minimized research record. We are looking for a balanced first cohort, not only people with complaints. Would you allow one clearly labeled research/recruitment post? If yes, I will follow any title/flair/link requirements you specify.
+Hello moderators — I'm running a small independent consumer research validation for U.S. wireless customers. DealKeeper checks device/trade-in bill-credit promotions without asking for carrier login credentials, phone numbers or account numbers. The optional PDF stays in the user's browser. We now also have a Safe Demo using synthetic values for people who only want to understand the tool. Real and synthetic submissions are technically separated. Would you allow one clearly labeled research/recruitment post? If yes, I will follow any title, flair, link and disclosure requirements you specify.
 
-## General community version — only where rules permit research recruitment
+## Current public problem signals — stress-test cohort only
 
-**Title:** Looking for AT&T / Verizon / T-Mobile customers with an active phone promo — free independent bill-credit audit
+These are evidence that the problem class exists, but they are **not prevalence evidence** because the users are already reporting problems.
 
-I'm testing a small consumer research project called DealKeeper.
+T-Mobile:
+- https://www.reddit.com/r/T_mobile_/comments/1vnpq50/psa_check_your_tmobile_promo_credits/
+- https://www.reddit.com/r/tmobile/comments/1v9n9tc/psa_check_your_free_line_credits_after_the_july/
+- https://www.reddit.com/r/tmobile/comments/1t0sebu/agent_confirmed_bill_max_of_282_came_in_at_340/
 
-The question is simple: if your carrier promised you $500–$1,500+ in device or trade-in credits over 24–36 months, are the credits on your bill actually matching that promise?
+Verizon:
+- https://www.reddit.com/r/verizon/comments/1vnaoky/bill_credits_for_trade/
+- https://www.reddit.com/r/verizon/comments/1ub4gpq/did_verizon_just_screw_me_out_of_2600_or_do_i/
+- https://www.reddit.com/r/verizon/comments/1q87wu5/verizon_not_applying_trade_in_credits/
 
-I'm looking for the first 30 U.S. AT&T, Verizon or T-Mobile customers with an active device promotion.
+AT&T:
+- https://www.reddit.com/r/ATT/comments/1sbl4wo/missing_trade_in_credit/
+- https://www.reddit.com/r/ATT/comments/1r6fj6h/missing_promotional_credits_and_was_told_i_dont/
 
-The research beta:
-- does not ask for your carrier password;
-- can be completed with manually entered bill-credit amounts;
-- optionally reads a PDF locally in your browser;
-- does not upload the bill PDF in this version;
-- is independent and not affiliated with any carrier.
+Do not use five known-problem cases as the first five audits. Keep this cohort separate from neutral prevalence validation.
 
-The audit is free. The goal is to learn how often real promotions are delayed, missing or mismatched — and whether people would pay for independent monitoring.
+## First-5 checkpoint before First 30
 
-Validation page:
-https://ai3453283-wq.github.io/dealkeeper-validation/?src=community
+Do not chase 30 immediately. First collect 5 clean v4 real audits and review them.
+
+Target mix:
+- at least 2 carriers represented;
+- at least 2 neutral/non-complaint cases;
+- ideally 1 new promotion still in activation/grace period;
+- ideally 1 suspected mismatch case;
+- remaining cases neutral or mixed.
+
+After five, review:
+- completion friction;
+- data-quality problems;
+- ON TRACK / WAITING / CHECK / MISSING / SHORTFALL mix;
+- manual ground truth for any suspected discrepancy;
+- protect-intent conversion by price;
+- acquisition-source quality.
 
 ## What NOT to say
 
 Do not claim:
-- "We found carrier errors in X% of bills" until the real cohort proves it.
-- "We guarantee you will recover money."
-- "Your bill is wrong" based only on simplified research rules.
-- affiliation with AT&T, Verizon or T-Mobile.
-- that full PDFs are centrally stored.
+- "We found carrier errors in X% of bills" until a real reviewed cohort supports it;
+- "We guarantee you will recover money";
+- "Your bill is wrong" based only on simplified prototype logic;
+- affiliation with AT&T, Verizon or T-Mobile;
+- that PDFs are centrally stored.
 
-Do not recruit only from complaint threads. That would invalidate the prevalence estimate.
+Do not recruit only from complaint threads.
 
-## First-30 cohort mix target
+## Formspree review fields
 
-Target exactly:
-- 10 AT&T
-- 10 Verizon
-- 10 T-Mobile
-
-Within each carrier, try to include all three states:
-- new promotions still inside the normal activation/grace period;
-- mature promotions currently receiving credits normally;
-- users who already suspect a mismatch.
-
-A useful first-30 cohort is balanced. It is not a list of 30 known billing complaints.
-
-## Validation data to inspect in Formspree
-
-For each `audit_completed` submission track:
+For each clean real `audit_completed` submission track:
 - participant_id
 - audit_id
+- schema
 - acquisition_source
+- data_mode
+- eligible_for_first30
+- synthetic_data
+- actual_data_confirmed
+- data_quality
 - carrier
 - result_status
 - promised_value
 - remaining_value
 - price_variant
 
-For `protect_intent`, match on the same `audit_id`.
+For real `protect_intent`, match on the same `audit_id`.
 
-Primary first-30 outputs:
-- completed audits by carrier;
-- ON TRACK / WAITING / CHECK / MISSING / SHORTFALL distribution;
-- suspected material mismatch rate (requires manual ground-truth review before calling it an error);
-- Protect intent conversion by price;
-- acquisition source mix.
+For demo events, keep separate:
+- `demo_completed`
+- `demo_protect_intent`
+
+Primary outputs:
+- completed clean real audits by carrier;
+- result-status distribution;
+- manually reviewed suspected discrepancy rate;
+- real protect-intent conversion by price;
+- demo comprehension / hypothetical WTP separately;
+- acquisition-source mix and conversion.
